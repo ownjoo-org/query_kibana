@@ -1,8 +1,13 @@
 import argparse
 import json
+import logging
+from sys import stderr
 from typing import Optional
 
-from template_cli.main import main
+from ownjoo_utils.logging.consts import LOG_FORMAT
+from ownjoo_utils.parsing.consts import TimeFormats
+
+from query_kibana.main import main
 
 
 if __name__ == '__main__':
@@ -23,13 +28,35 @@ if __name__ == '__main__':
         help='The FQDN for your API (not full URL)',
     )
     parser.add_argument(
+        '--index',
+        default='asset-*',
+        type=str,
+        required=False,
+        help='The name of the kibana index to query',
+    )
+    parser.add_argument(
         '--proxies',
         type=str,
         required=False,
         help="JSON structure specifying 'http' and 'https' proxy URLs",
     )
+    parser.add_argument(
+        '--log-level',
+        type=int,
+        required=False,
+        help="0 (NOTSET) - 50 (CRITICAL)",
+        default=logging.INFO,
+        dest='log_level',
+    )
 
     args = parser.parse_args()
+
+    logging.basicConfig(
+        format=LOG_FORMAT,
+        level=args.log_level,
+        datefmt=TimeFormats.date_and_time.value,
+        stream=stderr,
+    )
 
     proxies: Optional[dict] = None
     if proxies:
@@ -40,13 +67,7 @@ if __name__ == '__main__':
                 f'WARNING: failure parsing proxies: {exc_json}: proxies provided: {proxies}'
             )
 
-    result = main(
-        domain=args.domain,
-        api_key=args.client_id,
-        proxies=proxies,
-    )
-
-    if result:
+    if result := main(domain=args.domain, index=args.index, api_key=args.client_id, proxies=proxies):
         print(json.dumps(result, indent=4))
     else:
         print('No results found')

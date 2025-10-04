@@ -1,0 +1,3 @@
+PAGE_SIZE: int = 1000
+RETRY_COUNT: int = 3
+RETRY_BACKOFF_FACTOR: float = 2
