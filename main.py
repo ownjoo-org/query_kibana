@@ -24,7 +24,7 @@ if __name__ == '__main__':
         '--domain',
         default='example.com',
         type=str,
-        required=False,
+        required=True,
         help='The FQDN for your API (not full URL)',
     )
     parser.add_argument(
@@ -67,7 +67,7 @@ if __name__ == '__main__':
                 f'WARNING: failure parsing proxies: {exc_json}: proxies provided: {proxies}'
             )
 
-    if result := main(domain=args.domain, index=args.index, api_key=args.client_id, proxies=proxies):
-        print(json.dumps(result, indent=4))
-    else:
-        print('No results found')
+    print('[')
+    for result in main(domain=args.domain, index=args.index, api_key=args.api_key, proxies=proxies):
+        print(f'{json.dumps(result, indent=4)},')
+    print(']')

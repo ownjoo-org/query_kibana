@@ -84,4 +84,4 @@ def main(
             respect_retry_after_header=True,
         )
 
-    return list_results(url=f'https://{domain}/api/console/proxy', index=index)
+    return list_results(url=f'{domain}/api/console/proxy', index=index)

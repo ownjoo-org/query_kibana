@@ -5,7 +5,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "project_name"
+name = "query_kibana"
 version = "0.0.1"
 dependencies = [
 ]
